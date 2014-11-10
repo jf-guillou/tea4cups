@@ -1036,6 +1036,7 @@ class CupsBackend :
         # to stdout or stderr, else CUPS considers that the device is
         # not available.
         available = []
+        bannedbackends = [myname, "usb", "dnssd"]
         (directory, myname) = os.path.split(sys.argv[0])
         if not directory :
             directory = "./"
@@ -1060,7 +1061,7 @@ class CupsBackend :
             allbackends = [ os.path.join(directory, b) \
                                 for b in os.listdir(directory)
                                     if os.access(os.path.join(directory, b), os.X_OK) \
-                                        and (b != myname)]
+                                        and b not in bannedbackends ]
             for backend in allbackends :
                 answer = os.popen(backend, "r")
                 try :
