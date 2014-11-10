@@ -1036,8 +1036,8 @@ class CupsBackend :
         # to stdout or stderr, else CUPS considers that the device is
         # not available.
         available = []
-        bannedbackends = [myname, "usb", "dnssd"]
         (directory, myname) = os.path.split(sys.argv[0])
+        bannedbackends = [myname, "usb", "dnssd"]
         if not directory :
             directory = "./"
         tmpdir = tempfile.gettempdir()
