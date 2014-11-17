@@ -1325,7 +1325,7 @@ class CupsBackend :
 
         for p in [ (k, v) for (k, v) in self.pipes.items() if k != 0 ] :
             os.close(p[1][0])
-        if retcode == CUPS_BACKEND_OK :
+        if retcode == CUPS_BACKEND_OK or retcode == CUPS_BACKEND_CANCEL :
             self.logInfo("OK")
         else :
             self.logInfo("An error occured, please check CUPS' error_log file.")
