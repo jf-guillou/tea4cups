@@ -904,6 +904,7 @@ class CupsBackend :
         self.ControlFile = None
         self.ClientHost = None
         self.PrinterName = None
+        self.PrinterAddress = None
         self.JobBilling = None
         self.UserName = None
         self.Copies = None
@@ -1130,7 +1131,7 @@ class CupsBackend :
                 if device_uri.startswith("/") :
                     device_uri = device_uri[1:]
         try :
-            (backend, dummy) = device_uri.split(":", 1)
+            (backend, printer_address) = device_uri.split(":", 1)
         except ValueError :
             if not device_uri :
                 self.logDebug("Not attached to an existing print queue.")
@@ -1138,8 +1139,17 @@ class CupsBackend :
             else :
                 raise TeeError, "Invalid DEVICE_URI : %s\n" % device_uri
 
+        for dummy in range(2) :
+            if printer_address.startswith("/") :
+                printer_address = printer_address[1:]
+        try :
+            (printer_address, dummy) = printer_address.split("/", 1)
+        except ValueError :
+            self.logDebug("Strange printer address")
+
         self.RealBackend = backend
         self.DeviceURI = device_uri
+        self.PrinterAddress = printer_address
 
         try :
             cupsserver = CUPS() # TODO : username and password and/or encryption
@@ -1201,6 +1211,7 @@ class CupsBackend :
         """Exports our backend's attributes to the environment."""
         os.environ["DEVICE_URI"] = self.DeviceURI       # WARNING !
         os.environ["TEAPRINTERNAME"] = self.PrinterName
+        os.environ["TEAPRINTERADDR"] = self.PrinterAddress
         os.environ["TEADIRECTORY"] = self.Directory
         os.environ["TEADATAFILE"] = self.DataFile
         os.environ["TEAJOBSIZE"] = str(self.JobSize)
